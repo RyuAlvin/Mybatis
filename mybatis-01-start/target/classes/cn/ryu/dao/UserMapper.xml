@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.ryu.dao.UserMapper">
+    <select id="getUserLike1" resultType="user" parameterType="string">
+        select * from user where name like '%' #{name} '%'
+    </select>
+    <select id="getUserLike" resultType="user" parameterType="string">
+        select * from user where name like #{name}
+    </select>
+    <insert id="addUser2" parameterType="map">
+        insert into user(id,name,pwd) values(#{userid},#{username},#{userpwd})
+    </insert>
+    <insert id="addUser" parameterType="user">
+        insert into user(id,name,pwd) values(#{id},#{name},#{pwd})
+    </insert>
+    <select id="getUserList" resultType="user">
+        select * from user
+    </select>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.lognpage.dao.UserMapper">
+    <select id="getUserList" resultType="user" parameterType="map">
+        -- 分页方式一：在SQL层面实现分页
+        -- select * from table limit startIndex, pageSize // 分页语法
+        --
+        -- select * from table limit 5,10; // 检索记录行6-15
+        -- select * from table limit 95,-1; // 检索记录行96-last
+        -- select * from table limit 5; // 检索前5个记录，等价于 limit 0,5
+
+        select * from user limit #{startIndex},#{pageSize}
+    </select>
+    <select id="getUserListByRowBounds" resultType="user">
+        select * from user
+    </select>
+</mapper>

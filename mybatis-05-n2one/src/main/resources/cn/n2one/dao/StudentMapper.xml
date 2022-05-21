@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.n2one.dao.StudentMapper">
+    <!--多对一处理方式一：按查询嵌套处理①+②，类似于SQL中的子查询-->
+    <!--①-->
+    <select id="getStudentList" resultMap="StudentTeacher">
+        select *,"刘老师" as tname from student
+    </select>
+
+    <resultMap id="StudentTeacher" type="student">
+        <association property="teacher" column="{id=tid,name=tname}" javaType="teacher" select="getTeacher"/>
+    </resultMap>
+
+    <!--②这里的getTeacher方法只能写在StudentMapper里才有效
+            注意：在多条件的情况下，由查询①中获取到的值作为条件传入查询②，因此参数类型必须为java-->
+    <select id="getTeacher" resultType="teacher" parameterType="java.util.Map">
+        select * from teacher where id=#{id} and name=#{name}
+    </select>
+
+    <!--===================================================================-->
+
+    <!--多对一处理方式二：按结果嵌套处理，类似于SQL中的联表查询-->
+    <select id="getStudentList1" resultMap="StudentTeacher1">
+        select
+            s.id sid,
+            s.name sname,
+            t.id tid,
+            t.name tname
+        from student s, teacher t
+        where s.tid = t.id
+    </select>
+
+    <resultMap id="StudentTeacher1" type="student">
+        <id property="id" column="sid"/>
+        <result property="name" column="sname"/>
+        <association property="teacher" javaType="teacher">
+            <id property="id" column="tid"/>
+            <result property="name" column="tname"/>
+        </association>
+    </resultMap>
+</mapper>

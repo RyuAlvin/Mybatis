@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--标签顺序："(properties?,settings?,typeAliases?,typeHandlers?,objectFactory?,objectWrapperFactory?,reflectorFactory?,plugins?,environments?,databaseIdProvider?,mappers?)"-->
+    <!--属性文件，可引用外部配置文件。
+    如果两个文件有同一个字段，优先使用外部配置文件的-->
+    <properties resource="jdbc.properties"/>
+    <!--这是 MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为。-->
+    <settings>
+        <!--指定 MyBatis 所用日志的具体实现，未指定时将自动查找。
+        需要配置：日志依赖包+日志配置文件-->
+        <setting name="logImpl" value="LOG4J2"/>
+    </settings>
+    <!--可以给实体类起别名-->
+    <typeAliases>
+        <!--<typeAlias type="cn.ryu.pojo.User" alias="User"/>-->
+        <!--不但可以指定类别名，也可指定包
+        每一个在pojo下的JavaBean，在没有注解的情况下，会使用Bean的首字母消协的非限定类名来作为它的别名，
+        例：在mapper xml中的resultType直接写user就可以了-->
+        <package name="cn.ryu.pojo"/>
+    </typeAliases>
+    <environments default="development">
+        <!--可配置多个环境，但每个SqlSessionFactory实例只能选择一种环境-->
+        <environment id="development">
+            <!--Mybatis默认的事务管理器就是JDBC
+                MANAGED-->
+            <transactionManager type="JDBC"/>
+            <!--UNPOOLED｜POOLED｜JNDI
+                UNPOOLED：这个数据源的实现只是每次被请求时打开和关闭连接
+                POOLED：使得并发WEB应用快速响应请求的处理方式
+                JNDI：这个数据源的实现是为了能在如Spring或应用服务器这类容器中使用，
+                    容器可以集中或在外部配置数据源，然后放置一个JNDI上下文的引用-->
+            <dataSource type="POOLED">
+                <property name="driver" value="${dep.driver}"/>
+                <property name="url" value="${dep.url}"/>
+                <property name="username" value="${dep.username}"/>
+                <property name="password" value="${dep.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--注册绑定我们的Mapper文件-->
+    <mappers>
+        <!--注意：
+                1、接口和它的Mapper配置文件最好同名
+                2、接口和它的Mapper配置文件最好在同一个包下，但需要在pom.xml中配置build信息，因为IDEA是不会编译src的java目录的xml文件
+                3、或者在resources下建同等结构目录，然后放置Mapper配置文件
+                    不是cn.ryu.dao.xxx,而是如【绑定方式一】-->
+        <!--绑定方式一：-->
+        <mapper resource="cn/ryu/dao/UserMapper.xml"/>
+        <!--绑定方式二：-->
+        <!--<mapper class="cn.ryu.dao.UserMapper"/>-->
+        <!--绑定方式三：-->
+        <!--<package name="cn.ryu.dao"/>-->
+    </mappers>
+</configuration>

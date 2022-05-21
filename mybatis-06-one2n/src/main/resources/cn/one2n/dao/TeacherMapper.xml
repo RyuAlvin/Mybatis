@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.one2n.dao.TeacherMapper">
+    <!--多对一处理方式一：按查询嵌套处理①+②，类似于SQL中的子查询-->
+    <!--①-->
+    <select id="getTeacherList" resultMap="TeacherStudent">
+        select *, "%小%" as sname from teacher
+    </select>
+
+    <resultMap id="TeacherStudent" type="teacher">
+        <collection property="studentList" javaType="list" ofType="student" column="{tid=id,name=sname}" select="getStudentByTeacherId"/>
+    </resultMap>
+
+    <!--②-->
+    <select id="getStudentByTeacherId" resultType="student">
+        select * from student where tid=#{tid} and name like #{name}
+    </select>
+
+    <!--===================================================================-->
+
+    <!--多对一处理方式二：按结果嵌套处理，类似于SQL中的联表查询-->
+    <select id="getTeacherList1" resultMap="TeacherStudent1">
+        select
+            t.id tid,
+            t.name tname,
+            s.id sid,
+            s.name sname
+        from teacher t, student s
+        where t.id = s.tid
+    </select>
+
+    <resultMap id="TeacherStudent1" type="teacher">
+        <id property="id" column="tid"/>
+        <result property="name" column="tname"/>
+        <collection property="studentList" ofType="student" javaType="list">
+            <id property="id" column="sid"/>
+            <result property="name" column="sname"/>
+            <result property="tid" column="tid"/>
+        </collection>
+    </resultMap>
+</mapper>

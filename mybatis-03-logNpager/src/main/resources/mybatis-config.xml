@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="jdbc.properties"/>
+    <settings>
+    <!--Mybatis内置的日志工厂提供日志功能，具体的日志实现有以下几种工具：
+        -SLF4J
+        -Apache Commons Logging
+        -Log4j2
+        -Log4j
+        -JDK logging-->
+    <!--标准日志输出-->
+    <!--<setting name="logImpl" value="STDOUT_LOGGING"/>-->
+        <setting name="logImpl" value="LOG4J"/>
+    </settings>
+    <typeAliases>
+        <package name="cn.lognpage.pojo"/>
+    </typeAliases>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${dep.driver}"/>
+                <property name="url" value="${dep.url}"/>
+                <property name="username" value="${dep.username}"/>
+                <property name="password" value="${dep.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <package name="cn.lognpage.dao"/>
+    </mappers>
+</configuration>
